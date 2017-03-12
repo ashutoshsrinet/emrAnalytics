@@ -1,0 +1,102 @@
+<h2>All relevant EMRs</h2>
+
+
+<form class="form-horizontal" role="form">
+<img id="spinner" ng-src="img/spinner.gif" style="display:none;">
+	<div class="form-group">
+		<label for="title" class="col-sm-2 control-label">Input</label>
+
+		<div class="col-sm-8">
+			<input type="text" class="form-control" id="number"
+				placeholder="Enter the number...." ng-model="number">
+		</div>
+
+	<div class="col-sm-8">
+	</div>
+		<div class="btn-group">
+			
+			<button type="button" class="btn btn-primary" ng-click="getN()">Get N Records</button>
+			<button type="button" class="btn btn-primary" ng-click="getwdCount()">Get Weekday Count</button>
+			<button type="button" class="btn btn-primary" ng-click="getcityCount()">Get City Count</button>
+			<button type="button" class="btn btn-primary" ng-click="getyearCount()">Get Yearwise Count</button>
+			<button type="button" class="btn btn-primary" ng-click="gettodCount()">Get Time of Day Count</button>
+		</div>
+		
+	</div>
+
+</form>
+
+<table class="table table-hover {{case1}}">
+	<tr>
+		<th>#</th>
+		<th>Title</th>
+		<th>Description</th>
+		<th>Created On</th>
+		<th>Address</th>
+		<th>Township</th>
+	</tr>	
+	<tr class="" ng-repeat="emr in emrs">
+		<td>{{$index+1}}</td>
+		<td>{{emr.title}}</td>
+		<td>{{emr.desc}}</td>
+		<td>{{emr.timeStamp |date:'medium'}}</td>
+		<td>{{emr.addr}}</td>
+		<td>{{emr.twp}}</td>
+	</tr>
+</table>
+
+<table class="table table-hover {{case2}}">
+	<tr>
+		<th>#</th>
+		<th>Weekday</th>
+		<th>Number of cases</th>
+	</tr>	
+	<tr class="" ng-repeat="result in results">
+		<td>{{$index+1}}</td>
+		<td>{{result.column1}}</td>
+		<td>{{result.column2}}</td>
+		
+	</tr>
+</table>
+
+<table class="table table-hover {{case3}}">
+	<tr>
+		<th>#</th>
+		<th>City</th>
+		<th>Number of cases</th>
+	</tr>	
+	<tr class="" ng-repeat="result in results">
+		<td>{{$index+1}}</td>
+		<td>{{result.column1}}</td>
+		<td>{{result.column2}}</td>
+		
+	</tr>
+</table>
+
+<table class="table table-hover {{case4}}">
+	<tr>
+		<th>#</th>
+		<th>Year</th>
+		<th>Number of cases</th>
+	</tr>	
+	<tr class="" ng-repeat="result in results">
+		<td>{{$index+1}}</td>
+		<td>{{result.column1}}</td>
+		<td>{{result.column2}}</td>
+		
+	</tr>
+</table>
+
+<table class="table table-hover {{case5}}">
+	<tr>
+		<th>#</th>
+		<th>Time of day</th>
+		<th>Number of cases</th>
+	</tr>	
+	<tr class="" ng-repeat="result in results">
+		<td>{{$index+1}}</td>
+		<td>{{result.column1}}</td>
+		<td>{{result.column2}}</td>
+		
+	</tr>
+</table>
