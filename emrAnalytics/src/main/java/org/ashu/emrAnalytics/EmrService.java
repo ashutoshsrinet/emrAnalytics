@@ -108,13 +108,13 @@ public class EmrService {
 		Dataset<Emergency> emergencyDs = dataSet.as(Encoders.bean(Emergency.class));
 		emergencyDs.createOrReplaceTempView("emergency");
 		Dataset<Row> countMorning = sqlContext.sql(
-				"select  'Morning' as column1, count(*) as column2  from emergency where from_unixtime(unix_timeStamp(timestamp),'k') >= 6 and  from_unixtime(unix_timeStamp(timestamp),'k') < 12");
+				"select  'Morning' as column1, count(*) as column2  from emergency where from_unixtime(unix_timeStamp(timestamp),'k') >= 6 and  from_unixtime(unix_timeStamp(timestamp),'k') < 12").cache();
 		Dataset<Row> countAfternoon = sqlContext.sql(
-				"select  'Afternoon' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 12 and  from_unixtime(unix_timeStamp(timestamp),'k') < 16");
+				"select  'Afternoon' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 12 and  from_unixtime(unix_timeStamp(timestamp),'k') < 16").cache();
 		Dataset<Row> countEvening = sqlContext.sql(
-				"select  'Evening' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 16 and  from_unixtime(unix_timeStamp(timestamp),'k') < 20");
+				"select  'Evening' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 16 and  from_unixtime(unix_timeStamp(timestamp),'k') < 20").cache();
 		Dataset<Row> countNight = sqlContext.sql(
-				"select  'Night' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 20 or  from_unixtime(unix_timeStamp(timestamp),'k') < 6");
+				"select  'Night' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 20 or  from_unixtime(unix_timeStamp(timestamp),'k') < 6").cache();
 		Dataset<Row> count = countMorning.union(countAfternoon).union(countEvening).union(countNight);
 		Dataset<Result> result = count.as(Encoders.bean(Result.class));
 		return result.collectAsList();
