@@ -17,6 +17,8 @@ app.controller('ListCtrl', function($scope, $http) {
 	$scope.case3='hidden';
 	$scope.case4='hidden';
 	$scope.case5='hidden';
+	$scope.case6='hidden';
+	$scope.case7='hidden';
 	$scope.number = 10;
 	$scope.getN = function() {
 		$("#spinner").show();
@@ -25,6 +27,8 @@ app.controller('ListCtrl', function($scope, $http) {
 		$scope.case3='hidden';
 		$scope.case4='hidden';
 		$scope.case5='hidden';
+		$scope.case6='hidden';
+		$scope.case7='hidden';
 		$scope.emrs = null;
 		$http.get('/api/v1/showTopN/' + $scope.number).success(function(data) {
 			$scope.emrs = data;
@@ -40,6 +44,8 @@ app.controller('ListCtrl', function($scope, $http) {
 		$scope.case3='hidden';
 		$scope.case4='hidden';
 		$scope.case5='hidden';
+		$scope.case6='hidden';
+		$scope.case7='hidden';
 		$scope.results = null;
 		$http.get('/api/v1/wdcount/' + $scope.number).success(function(data) {
 			$scope.emrs = null;
@@ -56,6 +62,8 @@ app.controller('ListCtrl', function($scope, $http) {
 		$scope.case3='';
 		$scope.case4='hidden';
 		$scope.case5='hidden';
+		$scope.case6='hidden';
+		$scope.case7='hidden';
 		$scope.results = null;
 		$http.get('/api/v1/citycount/' + $scope.number).success(function(data) {
 			$scope.emrs = null;
@@ -72,6 +80,8 @@ app.controller('ListCtrl', function($scope, $http) {
 		$scope.case3='hidden';
 		$scope.case4='';
 		$scope.case5='hidden';
+		$scope.case6='hidden';
+		$scope.case7='hidden';
 		$scope.results = null;
 		$http.get('/api/v1/yearcount/' + $scope.number).success(function(data) {
 			$scope.emrs = null;
@@ -88,8 +98,46 @@ app.controller('ListCtrl', function($scope, $http) {
 		$scope.case3='hidden';
 		$scope.case4='hidden';
 		$scope.case5='';
+		$scope.case6='hidden';
+		$scope.case7='hidden';
 		$scope.results = null;
 		$http.get('/api/v1/gettodcount').success(function(data) {
+			$scope.emrs = null;
+			$scope.results = data;
+			$("#spinner").hide();
+		}).error(function(data, status) {
+			console.log('Error ' + data)
+		})
+	}
+	$scope.getyearwise = function() {
+		$("#spinner").show();
+		$scope.case1='hidden';
+		$scope.case2='hidden';
+		$scope.case3='hidden';
+		$scope.case4='hidden';
+		$scope.case5='hidden';
+		$scope.case6='';
+		$scope.case7='hidden';
+		$scope.results = null;
+		$http.get('/api/v1/getyearwise').success(function(data) {
+			$scope.emrs = null;
+			$scope.results = data;
+			$("#spinner").hide();
+		}).error(function(data, status) {
+			console.log('Error ' + data)
+		})
+	}
+	$scope.getmonthwise = function() {
+		$("#spinner").show();
+		$scope.case1='hidden';
+		$scope.case2='hidden';
+		$scope.case3='hidden';
+		$scope.case4='hidden';
+		$scope.case5='hidden';
+		$scope.case6='hidden';
+		$scope.case7='';
+		$scope.results = null;
+		$http.get('/api/v1/getmonthwise/'+ $scope.number).success(function(data) {
 			$scope.emrs = null;
 			$scope.results = data;
 			$("#spinner").hide();

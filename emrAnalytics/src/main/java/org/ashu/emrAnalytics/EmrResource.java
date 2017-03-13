@@ -22,6 +22,14 @@ public class EmrResource {
 
 		-> emrService.showTopN(request.params(":n")), new JsonTransformer());
 		
+		get(API_CONTEXT + "/getyearwise", "application/json", (request, response)
+
+				-> emrService.showYearWiseCount(), new JsonTransformer());
+		
+		get(API_CONTEXT + "/getmonthwise/:n", "application/json", (request, response)
+
+				-> emrService.showMonthWiseCount(request.params(":n")), new JsonTransformer());
+		
 		get(API_CONTEXT + "/wdcount/:n", "application/json", (request, response)
 
 				-> emrService.showWeekdayCount(request.params(":n")), new JsonTransformer());

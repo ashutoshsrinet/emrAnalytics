@@ -15,13 +15,13 @@
 	</div>
 		<div class="btn-group">
 			
-			<button type="button" class="btn btn-primary" ng-click="getN()">Get N Records given N</button>
-			<button type="button" class="btn btn-primary" ng-click="getN()">Get Year wise Records</button>
-			<button type="button" class="btn btn-primary" ng-click="getN()">Get Month wise Records</button>
-			<button type="button" class="btn btn-primary" ng-click="getwdCount()">Get Weekday Count given year</button>
-			<button type="button" class="btn btn-primary" ng-click="getcityCount()">Get City Count given year</button>
-			<button type="button" class="btn btn-primary" ng-click="getyearCount()">Get Year wise Count given city</button>
-			<button type="button" class="btn btn-primary" ng-click="gettodCount()">Get TimeofDay Count</button>
+			<button type="button" class="btn btn-primary" ng-click="getN()">Get N Records(N)</button>
+			<button type="button" class="btn btn-primary" ng-click="getyearwise()">Get Year wise()</button>
+			<button type="button" class="btn btn-primary" ng-click="getmonthwise()">Get Month wise(year)</button>
+			<button type="button" class="btn btn-primary" ng-click="getwdCount()">Get Weekday Count(year)</button>
+			<button type="button" class="btn btn-primary" ng-click="getcityCount()">Get City Count(year)</button>
+			<button type="button" class="btn btn-primary" ng-click="getyearCount()">Get Year wise Count(city)</button>
+			<button type="button" class="btn btn-primary" ng-click="gettodCount()">Get TimeofDay Count()</button>
 		</div>
 		
 	</div>
@@ -93,6 +93,34 @@
 	<tr>
 		<th>#</th>
 		<th>Time of day</th>
+		<th>Number of cases</th>
+	</tr>	
+	<tr class="" ng-repeat="result in results">
+		<td>{{$index+1}}</td>
+		<td>{{result.column1}}</td>
+		<td>{{result.column2}}</td>
+		
+	</tr>
+</table>
+
+<table class="table table-hover {{case6}}">
+	<tr>
+		<th>#</th>
+		<th>Year</th>
+		<th>Number of cases</th>
+	</tr>	
+	<tr class="" ng-repeat="result in results">
+		<td>{{$index+1}}</td>
+		<td>{{result.column1}}</td>
+		<td>{{result.column2}}</td>
+		
+	</tr>
+</table>
+
+<table class="table table-hover {{case7}}">
+	<tr>
+		<th>#</th>
+		<th>Month</th>
 		<th>Number of cases</th>
 	</tr>	
 	<tr class="" ng-repeat="result in results">
