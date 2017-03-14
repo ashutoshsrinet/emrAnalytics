@@ -41,7 +41,7 @@ public class EmrService {
 		sqlContext = new SQLContext(session);
 		dataSet = session.read().option("header", "true").option("inferSchema", "true").csv(sourceCsvURI);
 
-		//showMonthWiseCount("2016");
+		// showMonthWiseCount("2016");
 	}
 
 	/**
@@ -52,6 +52,37 @@ public class EmrService {
 		Dataset<Emergency> emergencyDs = dataSet.as(Encoders.bean(Emergency.class));
 		Integer num = Integer.valueOf(number);
 		return emergencyDs.takeAsList(num);
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Result> showYearWiseCount() {
+		Dataset<Emergency> emergencyDs = dataSet.as(Encoders.bean(Emergency.class));
+		emergencyDs.createOrReplaceTempView("emergency");
+		Dataset<Row> countYear = sqlContext
+				.sql("select  from_unixtime(unix_timestamp(timeStamp),'Y') as column1, count(*) as column2  from emergency group by from_unixtime(unix_timestamp(timeStamp),'Y')")
+				.cache();
+
+		Dataset<Result> result = countYear.as(Encoders.bean(Result.class));
+		return result.collectAsList();
+	}
+
+	/**
+	 * @param year
+	 * @return
+	 */
+	public List<Result> showMonthWiseCount(String year) {
+		Dataset<Emergency> emergencyDs = dataSet.as(Encoders.bean(Emergency.class));
+		Dataset<Emergency> filterDS = emergencyDs.filter(f -> f.getYear() == Integer.parseInt(year));
+		filterDS.createOrReplaceTempView("emergency");
+		Dataset<Row> countMonth = sqlContext
+				.sql("select  from_unixtime(unix_timestamp(timeStamp),'MMM') as column1, count(*) as column2  from emergency group by from_unixtime(unix_timestamp(timeStamp),'MMM')")
+				.cache();
+
+		Dataset<Result> result = countMonth.as(Encoders.bean(Result.class));
+		result.show();
+		return result.collectAsList();
 	}
 
 	/**
@@ -78,8 +109,7 @@ public class EmrService {
 	public List<Result> showCityWiseIncidents(String year) {
 		Dataset<Emergency> emergencyDs = dataSet.as(Encoders.bean(Emergency.class));
 
-		JavaRDD<Emergency> javaRDD = emergencyDs.filter(e -> e.getYear() == Integer.parseInt(year))
-				.toJavaRDD();
+		JavaRDD<Emergency> javaRDD = emergencyDs.filter(e -> e.getYear() == Integer.parseInt(year)).toJavaRDD();
 		JavaPairRDD<String, Long> cityPair = javaRDD.mapToPair(e -> new Tuple2<String, Long>(e.getTwp(), (long) 1));
 		JavaPairRDD<String, Long> reducedCityPair = cityPair.reduceByKey((num1, num2) -> num1 + num2);
 		List<Result> results = reducedCityPair.map(t -> new Result(t._1, t._2)).collect();
@@ -107,38 +137,20 @@ public class EmrService {
 	public List<Result> showDayTimeCount() {
 		Dataset<Emergency> emergencyDs = dataSet.as(Encoders.bean(Emergency.class));
 		emergencyDs.createOrReplaceTempView("emergency");
-		Dataset<Row> countMorning = sqlContext.sql(
-				"select  'Morning' as column1, count(*) as column2  from emergency where from_unixtime(unix_timeStamp(timestamp),'k') >= 6 and  from_unixtime(unix_timeStamp(timestamp),'k') < 12").cache();
-		Dataset<Row> countAfternoon = sqlContext.sql(
-				"select  'Afternoon' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 12 and  from_unixtime(unix_timeStamp(timestamp),'k') < 16").cache();
-		Dataset<Row> countEvening = sqlContext.sql(
-				"select  'Evening' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 16 and  from_unixtime(unix_timeStamp(timestamp),'k') < 20").cache();
-		Dataset<Row> countNight = sqlContext.sql(
-				"select  'Night' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 20 or  from_unixtime(unix_timeStamp(timestamp),'k') < 6").cache();
+		Dataset<Row> countMorning = sqlContext
+				.sql("select  'Morning' as column1, count(*) as column2  from emergency where from_unixtime(unix_timeStamp(timestamp),'k') >= 6 and  from_unixtime(unix_timeStamp(timestamp),'k') < 12")
+				.cache();
+		Dataset<Row> countAfternoon = sqlContext
+				.sql("select  'Afternoon' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 12 and  from_unixtime(unix_timeStamp(timestamp),'k') < 16")
+				.cache();
+		Dataset<Row> countEvening = sqlContext
+				.sql("select  'Evening' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 16 and  from_unixtime(unix_timeStamp(timestamp),'k') < 20")
+				.cache();
+		Dataset<Row> countNight = sqlContext
+				.sql("select  'Night' as column1, count(*) as count  from emergency where  from_unixtime(unix_timeStamp(timestamp),'k') >= 20 or  from_unixtime(unix_timeStamp(timestamp),'k') < 6")
+				.cache();
 		Dataset<Row> count = countMorning.union(countAfternoon).union(countEvening).union(countNight);
 		Dataset<Result> result = count.as(Encoders.bean(Result.class));
-		return result.collectAsList();
-	}
-
-	public List<Result> showYearWiseCount() {
-		Dataset<Emergency> emergencyDs = dataSet.as(Encoders.bean(Emergency.class));
-		emergencyDs.createOrReplaceTempView("emergency");
-		Dataset<Row> countYear = sqlContext.sql(
-				"select  from_unixtime(unix_timestamp(timeStamp),'Y') as column1, count(*) as column2  from emergency group by from_unixtime(unix_timestamp(timeStamp),'Y')").cache();
-		
-		Dataset<Result> result = countYear.as(Encoders.bean(Result.class));
-		return result.collectAsList();
-	}
-	
-	public List<Result> showMonthWiseCount(String year) {
-		Dataset<Emergency> emergencyDs = dataSet.as(Encoders.bean(Emergency.class));
-		Dataset<Emergency> filterDS = emergencyDs.filter(f -> f.getYear() == Integer.parseInt(year));
-		filterDS.createOrReplaceTempView("emergency");
-		Dataset<Row> countMonth = sqlContext.sql(
-				"select  from_unixtime(unix_timestamp(timeStamp),'MMM') as column1, count(*) as column2  from emergency group by from_unixtime(unix_timestamp(timeStamp),'MMM')").cache();
-		
-		Dataset<Result> result = countMonth.as(Encoders.bean(Result.class));
-		result.show();
 		return result.collectAsList();
 	}
 
